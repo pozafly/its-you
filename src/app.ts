@@ -1,6 +1,7 @@
 import { App, GlobalShortcut, LogLevel } from '@slack/bolt';
 import './utils/env';
 import { openModal } from './utils/openModal';
+import { commandOpenModal } from './utils/commandOpenModal';
 
 const app = new App({
   token: process.env.SLACK_BOT_TOKEN,
@@ -14,12 +15,7 @@ app.message('hello', async ({ message, say }) => {
 });
 
 app.shortcut<GlobalShortcut>('random', openModal);
-app.command('/random', async ({ ack, respond }) => {
-  console.log('들어옴@@@@@@@@@@@@@@@', respond);
-  try {
-    await ack();
-  } catch (error) {}
-});
+app.command('/random', commandOpenModal);
 
 // app.action('button_click', async ({ message, say }) => {
 //   /* ... */
