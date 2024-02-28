@@ -5,6 +5,7 @@ import {
   SlackShortcutMiddlewareArgs,
 } from '@slack/bolt';
 import { StringIndexed } from '@slack/bolt/dist/types/helpers';
+import { getUsers } from '../getUsers';
 
 export const commandOpenModal = async ({
   body,
@@ -14,16 +15,7 @@ export const commandOpenModal = async ({
 }: SlackCommandMiddlewareArgs & AllMiddlewareArgs<StringIndexed>) => {
   try {
     await ack();
-    const { members } = await client.conversations.members({
-      channel: body.channel_id,
-    });
-
-    const memberNames = await Promise.all(
-      (members || []).map(async (userId: string) => {
-        const userInfo = await client.users.info({ user: userId });
-        return userInfo.user?.real_name || userInfo.user?.name;
-      })
-    );
+    const memberNames = await getUsers({ channelId: body.channel_id, client });
 
     // NOTE: 예시
     memberNames.push('최득교', '정윤정', '장하나');
@@ -46,7 +38,7 @@ export const commandOpenModal = async ({
         },
         close: {
           type: 'plain_text',
-          text: 'Cancel',
+          text: '취소',
           emoji: true,
         },
 
@@ -91,10 +83,16 @@ export const commandOpenModal = async ({
           },
           {
             type: 'input',
+            block_id: 'member_input_block',
             element: {
               type: 'plain_text_input',
               multiline: true,
-              action_id: 'plain_text_input-action',
+              action_id: 'member_input',
+              focus_on_load: true,
+              placeholder: {
+                type: 'plain_text',
+                text: '인원을 입력해주세요.',
+              },
             },
             label: {
               type: 'plain_text',
@@ -112,9 +110,28 @@ export const commandOpenModal = async ({
                   text: name || '',
                   emoji: true,
                 },
-                value: name,
+                value: JSON.stringify(memberNames),
+                action_id: `user_button_${name}`,
               };
             }),
+          },
+          {
+            type: 'section',
+            text: {
+              type: 'mrkdwn',
+              text: '모든 인원을 선택합니다.',
+            },
+            accessory: {
+              type: 'button',
+              text: {
+                type: 'plain_text',
+                text: '전체 선택',
+                emoji: true,
+              },
+              value: 'click_me_123',
+              action_id: 'insert_all_users',
+              style: 'primary',
+            },
           },
         ],
       },
