@@ -141,6 +141,8 @@ app.action<BlockAction>(
               },
               {
                 type: 'input',
+                // NOTE: block_id가 달라져야 initial_value가 새롭게 들어간다.
+                // https://stackoverflow.com/questions/72788906/slack-block-kit-plain-text-input-element-update-text-value
                 block_id: `member_input_block_${new Date().getMilliseconds()}`,
                 element: {
                   type: 'plain_text_input',
