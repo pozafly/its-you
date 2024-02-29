@@ -1,8 +1,9 @@
-import { App, GlobalShortcut } from '@slack/bolt';
+import { App, GlobalShortcut, ViewSubmitAction } from '@slack/bolt';
 import './utils/env';
 import { openModal } from './functions/openModal';
 import { commandOpenModal } from './functions/commandOpenModal';
 import { insertAllUsers } from './functions/insertAllUsers';
+import { responseModal } from './functions/responseModal';
 
 const app = new App({
   token: process.env.SLACK_BOT_TOKEN,
@@ -19,6 +20,7 @@ app.command('/random', commandOpenModal);
 
 // https://api.slack.com/methods/views.update
 app.action('insert_all_users', insertAllUsers);
+app.view<ViewSubmitAction>('random', responseModal);
 
 (async () => {
   await app.start(process.env.PORT || 3000);
