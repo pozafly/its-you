@@ -1,35 +1,35 @@
 import {
   AllMiddlewareArgs,
-  GlobalShortcut,
-  SlackCommandMiddlewareArgs,
-  SlackShortcutMiddlewareArgs,
+  BlockAction,
+  SlackActionMiddlewareArgs,
 } from '@slack/bolt';
-import { StringIndexed } from '@slack/bolt/dist/types/helpers';
-import { getUsers } from '../getUsers';
 
-export const commandOpenModal = async ({
-  body,
+export const insertAllUsers = async ({
   ack,
   client,
-  logger,
-}: SlackCommandMiddlewareArgs & AllMiddlewareArgs<StringIndexed>) => {
+  body,
+  payload,
+}: SlackActionMiddlewareArgs<BlockAction> & AllMiddlewareArgs) => {
+  await ack();
+
+  console.log('payload.value', payload);
+  console.log('body', body);
+
+  const members = body.view?.private_metadata;
+
   try {
-    await ack();
-
-    const { members } = await client.conversations.members({
-      channel: body.channel_id,
-    });
-
-    const result = await client.views.open({
-      trigger_id: body.trigger_id,
+    await client.views.update({
+      view_id: body?.view?.id,
+      hash: body?.view?.hash,
 
       view: {
         type: 'modal',
         callback_id: 'random',
-        private_metadata: members?.join(','),
+        private_metadata: members,
+
         title: {
           type: 'plain_text',
-          text: '울룰루!',
+          text: '오호! 아하!',
           emoji: true,
         },
         submit: {
@@ -55,11 +55,11 @@ export const commandOpenModal = async ({
                 emoji: true,
               },
               action_id: 'multi_users_select-action',
-              // initial_users: members,
+              initial_users: members?.split(','),
             },
             label: {
               type: 'plain_text',
-              text: '멤버를 선택해 주세요',
+              text: 'Label',
               emoji: true,
             },
           },
@@ -67,7 +67,7 @@ export const commandOpenModal = async ({
           {
             type: 'section',
             text: {
-              type: 'plain_text',
+              type: 'mrkdwn',
               text: '모든 인원을 선택합니다.',
             },
             accessory: {
@@ -99,8 +99,7 @@ export const commandOpenModal = async ({
         ],
       },
     });
-    logger.info(result);
-  } catch (error) {
-    logger.error(error);
+  } catch (e) {
+    console.log(e);
   }
 };
