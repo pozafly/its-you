@@ -26,7 +26,10 @@ export const commandOpenModal = async ({
       view: {
         type: 'modal',
         callback_id: 'random',
-        private_metadata: members?.join(','),
+        private_metadata: JSON.stringify({
+          members: members?.join(','),
+          channelId: body.channel_id,
+        }),
         title: {
           type: 'plain_text',
           text: '울룰루!',
@@ -84,6 +87,7 @@ export const commandOpenModal = async ({
           },
           {
             type: 'input',
+            block_id: 'number_input',
             element: {
               type: 'number_input',
               is_decimal_allowed: false,

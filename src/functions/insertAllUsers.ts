@@ -8,14 +8,14 @@ export const insertAllUsers = async ({
   ack,
   client,
   body,
-  payload,
 }: SlackActionMiddlewareArgs<BlockAction> & AllMiddlewareArgs) => {
   await ack();
 
-  console.log('payload.value', payload);
-  console.log('body', body);
+  const { members, channelId } = JSON.parse(
+    body.view?.private_metadata || '{}'
+  );
 
-  const members = body.view?.private_metadata;
+  console.log('{ members, channelId }', { members, channelId });
 
   try {
     await client.views.update({
@@ -25,11 +25,14 @@ export const insertAllUsers = async ({
       view: {
         type: 'modal',
         callback_id: 'random',
-        private_metadata: members,
+        private_metadata: JSON.stringify({
+          members,
+          channelId,
+        }),
 
         title: {
           type: 'plain_text',
-          text: '오호! 아하!',
+          text: '울룰루',
           emoji: true,
         },
         submit: {
@@ -84,6 +87,7 @@ export const insertAllUsers = async ({
           },
           {
             type: 'input',
+            block_id: 'number_input',
             element: {
               type: 'number_input',
               is_decimal_allowed: false,
