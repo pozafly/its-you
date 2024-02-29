@@ -3,6 +3,7 @@ import {
   SlackViewAction,
   SlackViewMiddlewareArgs,
 } from '@slack/bolt';
+import { getRandomNumber } from '../utils/numbers';
 
 export const responseModal = async ({
   ack,
@@ -35,12 +36,16 @@ export const responseModal = async ({
     }
     await ack();
 
-    const mentionUser = members.map((name) => `<@${name}>`).join(', ');
+    const selectedUsers = [];
+    for (let i = 0; i < count; i++) {
+      const target: string = members[getRandomNumber(0, members.length)];
+      selectedUsers.push(target);
+      members = members?.filter((name) => name !== target);
+    }
 
-    // TODO: 랜덤 추첨만 들어가면 된다.
-
+    const mentionedUser = selectedUsers.map((name) => `<@${name}>`).join(', ');
     await client.chat.postMessage({
-      text: `당첨! ${mentionUser}`,
+      text: `당첨! ${mentionedUser} 축하드립니다!`,
       channel: channelId,
     });
   } catch (error) {
