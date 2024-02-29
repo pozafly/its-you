@@ -1,11 +1,5 @@
-import {
-  AllMiddlewareArgs,
-  GlobalShortcut,
-  SlackCommandMiddlewareArgs,
-  SlackShortcutMiddlewareArgs,
-} from '@slack/bolt';
+import { AllMiddlewareArgs, SlackCommandMiddlewareArgs } from '@slack/bolt';
 import { StringIndexed } from '@slack/bolt/dist/types/helpers';
-import { getUsers } from '../getUsers';
 
 export const commandOpenModal = async ({
   body,

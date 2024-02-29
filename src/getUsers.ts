@@ -7,7 +7,6 @@ export const getUsers = async ({
   channelId: string;
   client: AllMiddlewareArgs['client'];
 }) => {
-  console.log('@@@@@@@@channelID', channelId);
   const { members } = await client.conversations.members({
     channel: channelId,
   });

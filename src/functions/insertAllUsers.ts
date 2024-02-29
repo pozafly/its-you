@@ -15,8 +15,6 @@ export const insertAllUsers = async ({
     body.view?.private_metadata || '{}'
   );
 
-  console.log('{ members, channelId }', { members, channelId });
-
   try {
     await client.views.update({
       view_id: body?.view?.id,

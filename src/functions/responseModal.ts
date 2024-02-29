@@ -10,7 +10,6 @@ export const responseModal = async ({
   view,
   client,
   logger,
-  context,
   body,
 }: SlackViewMiddlewareArgs<SlackViewAction> & AllMiddlewareArgs) => {
   const { channelId } = JSON.parse(body.view?.private_metadata || '{}');
