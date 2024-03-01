@@ -1,6 +1,5 @@
 import { App, GlobalShortcut, ViewSubmitAction } from '@slack/bolt';
 import './utils/env';
-import { openModal } from './test/openModal';
 import commands from './feature/commands';
 import responseModal from './feature/responseModal';
 import insertAllUsers from './interactions/insertAllUsers';
@@ -13,12 +12,10 @@ const app = new App({
 
 /**
  * event 등록
- * shortcut: 단축키 실행
  * action : 모달에서 '전체 선택' 버튼 클릭 시
  * view: 모달에서 '제출' 버튼 클릭 시
  */
 //
-app.shortcut<GlobalShortcut>('random', openModal);
 app.command('/random', commands);
 app.action('insert_all_users', insertAllUsers);
 app.view<ViewSubmitAction>('random', responseModal);
