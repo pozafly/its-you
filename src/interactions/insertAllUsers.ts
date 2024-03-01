@@ -5,11 +5,11 @@ import {
 } from '@slack/bolt';
 import generateBlocks from '../utils/generateBlocks';
 
-export const insertAllUsers = async ({
+export default async function insertAllUsers({
   ack,
   client,
   body,
-}: SlackActionMiddlewareArgs<BlockAction> & AllMiddlewareArgs) => {
+}: SlackActionMiddlewareArgs<BlockAction> & AllMiddlewareArgs) {
   await ack();
 
   const { members, channelId } = JSON.parse(
@@ -25,4 +25,4 @@ export const insertAllUsers = async ({
   } catch (e) {
     console.log(e);
   }
-};
+}

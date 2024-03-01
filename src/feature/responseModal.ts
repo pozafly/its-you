@@ -3,15 +3,16 @@ import {
   SlackViewAction,
   SlackViewMiddlewareArgs,
 } from '@slack/bolt';
-import { getRandomNumber } from '../utils/numbers';
+import getRandomUsers from '../utils/getRandomUsers';
+import getResponseMessage from '../utils/getResponseResult';
 
-export const responseModal = async ({
+export default async function responseModal({
   ack,
   view,
   client,
   logger,
   body,
-}: SlackViewMiddlewareArgs<SlackViewAction> & AllMiddlewareArgs) => {
+}: SlackViewMiddlewareArgs<SlackViewAction> & AllMiddlewareArgs) {
   const { channelId } = JSON.parse(body.view?.private_metadata || '{}');
 
   try {
@@ -33,21 +34,15 @@ export const responseModal = async ({
         },
       });
     }
+
     await ack();
 
-    const selectedUsers = [];
-    for (let i = 0; i < count; i++) {
-      const target: string = members[getRandomNumber(0, members.length)];
-      selectedUsers.push(target);
-      members = members?.filter((name) => name !== target);
-    }
-
-    const mentionedUser = selectedUsers.map((name) => `<@${name}>`).join(', ');
-    await client.chat.postMessage({
-      text: `당첨! ${mentionedUser} 축하드립니다!`,
+    const message = getResponseMessage(members, count);
+    const result = await client.chat.postMessage({
       channel: channelId,
+      text: message,
     });
   } catch (error) {
     logger.error(error);
   }
-};
+}

@@ -6,7 +6,6 @@ import {
   SlackShortcutMiddlewareArgs,
 } from '@slack/bolt';
 import { StringIndexed } from '@slack/bolt/dist/types/helpers';
-import { getUsers } from '../getUsers';
 
 export const commandOpenModal = async ({
   body,
@@ -16,7 +15,18 @@ export const commandOpenModal = async ({
 }: SlackCommandMiddlewareArgs & AllMiddlewareArgs<StringIndexed>) => {
   try {
     await ack();
-    const memberNames = await getUsers({ channelId: body.channel_id, client });
+
+    const { members } = await client.conversations.members({
+      channel: body.channel_id,
+      client,
+    });
+
+    const memberNames = await Promise.all(
+      (members || []).map(async (userId: string) => {
+        const userInfo = await client.users.info({ user: userId });
+        return userInfo.user?.real_name || userInfo.user?.name;
+      })
+    );
 
     // NOTE: 예시
     memberNames.push('최득교', '정윤정', '장하나');

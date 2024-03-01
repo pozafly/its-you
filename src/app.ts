@@ -1,9 +1,9 @@
 import { App, GlobalShortcut, ViewSubmitAction } from '@slack/bolt';
 import './utils/env';
 import { openModal } from './test/openModal';
-import { commandOpenModal } from './feature/commandOpenModal';
-import { insertAllUsers } from './functions/insertAllUsers';
-import { responseModal } from './feature/responseModal';
+import commands from './feature/commands';
+import responseModal from './feature/responseModal';
+import insertAllUsers from './interactions/insertAllUsers';
 
 // init
 const app = new App({
@@ -19,7 +19,7 @@ const app = new App({
  */
 //
 app.shortcut<GlobalShortcut>('random', openModal);
-app.command('/random', commandOpenModal);
+app.command('/random', commands);
 app.action('insert_all_users', insertAllUsers);
 app.view<ViewSubmitAction>('random', responseModal);
 
