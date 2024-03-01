@@ -1,4 +1,5 @@
-import { App, GlobalShortcut, ViewSubmitAction } from '@slack/bolt';
+import type { ViewSubmitAction } from '@slack/bolt';
+import { App } from '@slack/bolt';
 import './utils/env';
 import commands from './feature/commands';
 import responseModal from './feature/responseModal';

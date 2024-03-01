@@ -1,9 +1,8 @@
-import {
+import type {
   AllMiddlewareArgs,
   SlackViewAction,
   SlackViewMiddlewareArgs,
 } from '@slack/bolt';
-import getRandomUsers from '../utils/getRandomUsers';
 import getResponseMessage from '../utils/getResponseResult';
 
 export default async function responseModal({

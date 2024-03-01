@@ -1,6 +1,8 @@
-import { AllMiddlewareArgs, SlackCommandMiddlewareArgs } from '@slack/bolt';
-import { StringIndexed } from '@slack/bolt/dist/types/helpers';
-import generateBlocks from '../utils/generateBlocks';
+import type {
+  AllMiddlewareArgs,
+  SlackCommandMiddlewareArgs,
+} from '@slack/bolt';
+import type { StringIndexed } from '@slack/bolt/dist/types/helpers';
 import openModal from '../interactions/openModal';
 import getResponseMessage from '../utils/getResponseResult';
 
