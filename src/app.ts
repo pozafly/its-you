@@ -1,9 +1,9 @@
 import { App, GlobalShortcut, ViewSubmitAction } from '@slack/bolt';
 import './utils/env';
-import { openModal } from './functions/openModal';
-import { commandOpenModal } from './functions/commandOpenModal';
+import { openModal } from './test/openModal';
+import { commandOpenModal } from './feature/commandOpenModal';
 import { insertAllUsers } from './functions/insertAllUsers';
-import { responseModal } from './functions/responseModal';
+import { responseModal } from './feature/responseModal';
 
 // init
 const app = new App({
