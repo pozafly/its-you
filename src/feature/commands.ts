@@ -11,8 +11,9 @@ export default async function commands({
   logger,
   payload,
 }: SlackCommandMiddlewareArgs & AllMiddlewareArgs<StringIndexed>) {
-  // NOTE: payload.text: '<!subteam^S06MDLGF4RY|@product>',
-  const groupId = payload.text.match(/(?<=subteam\^)(.*?)(?=\|)/gm)?.[0];
+  const [rawGroupText, count = 1] = payload.text.split(' ');
+  // NOTE: rawGroupText: '<!subteam^S06MDLGF4RY|@product>',
+  const groupId = rawGroupText?.match(/(?<=subteam\^)(.*?)(?=\|)/gm)?.[0];
 
   try {
     await ack();
@@ -30,7 +31,7 @@ export default async function commands({
         throw new Error('no users');
       }
 
-      const message = getResponseMessage(users, 1);
+      const message = getResponseMessage(users, Number(count));
       const result = await client.chat.postMessage({
         channel: body.channel_id,
         text: message,
