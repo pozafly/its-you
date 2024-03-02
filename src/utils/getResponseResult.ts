@@ -1,8 +1,21 @@
 import getRandomUsers from './getRandomUsers';
 
-export default function getResponseMessage(members: string[], count: number) {
-  const selectedUsers = getRandomUsers(members, count);
-  const mentionedUser = selectedUsers.map((name) => `<@${name}>`).join(', ');
+type Props = {
+  author: string;
+  members: string[];
+  count: number;
+};
 
-  return `🎉 당첨! ${mentionedUser} 축하드립니다. 🥳`;
+export default function getResponseMessage({
+  author = '',
+  members = [],
+  count = 1,
+}: Props) {
+  const selectedUsers = getRandomUsers(members, count);
+  const mentionedUser = selectedUsers
+    .map((name, index) => `>• ${index + 1}등 : <@${name}>`)
+    .join('\n');
+  const authorUser = `<@${author}>`;
+
+  return `🥳 *당첨! 축하드립니다.* 🎉- by ${authorUser}\n${mentionedUser}`;
 }
