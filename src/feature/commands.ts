@@ -33,10 +33,15 @@ export default async function commands({
         throw new Error('no users');
       }
 
-      const message = getResponseMessage(users, Number(count));
+      const message = getResponseMessage({
+        author: body.user_id,
+        members: users,
+        count: Number(count),
+      });
       const result = await client.chat.postMessage({
         channel: body.channel_id,
         text: message,
+        mrkdwn: true,
       });
       logger.info(result);
     }

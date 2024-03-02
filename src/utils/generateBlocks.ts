@@ -71,7 +71,6 @@ export default function generateBlocks({
           },
           value: 'click_me',
           action_id: 'insert_all_users',
-          style: 'danger',
         },
       },
       {

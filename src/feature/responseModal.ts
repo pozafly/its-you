@@ -36,11 +36,17 @@ export default async function responseModal({
 
     await ack();
 
-    const message = getResponseMessage(members, count);
+    const message = getResponseMessage({
+      author: body.user.id,
+      members,
+      count,
+    });
     const result = await client.chat.postMessage({
       channel: channelId,
       text: message,
+      mrkdwn: true,
     });
+    logger.info(result);
   } catch (error) {
     logger.error(error);
   }
