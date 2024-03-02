@@ -1,9 +1,9 @@
 import type { ViewSubmitAction } from '@slack/bolt';
 import { App } from '@slack/bolt';
 import './utils/env';
-import commands from './feature/commands';
-import responseModal from './feature/responseModal';
-import insertAllUsers from './interactions/insertAllUsers';
+import commands from './handlers/commands';
+import responseModal from './handlers/responseModal';
+import insertAllUsers from './handlers/insertAllUsers';
 
 // init
 const app = new App({
