@@ -5,15 +5,19 @@
   "scripts": {
     "build": "tsc -p .",
     "build:watch": "tsc -w -p .",
-    "start": "ts-node src/app.ts",
-    "dev": "ts-node-dev --respawn --transpile-only --notify src/app.ts"
+    "dev": "ts-node-dev --respawn --transpile-only --notify src/app.ts",
+    "start": "wrangler dev src/app.ts",
+    "deployment": "wrangler deploy src/app.ts"
   },
   "dependencies": {
     "@slack/bolt": "^3.17.1"
   },
   "devDependencies": {
+    "@cloudflare/workers-types": "^4.20240222.0",
     "dotenv": "^16.4.5",
+    "slack-cloudflare-workers": "^0.10.3",
     "ts-node-dev": "^2.0.0",
-    "typescript": "^5.3.3"
+    "typescript": "^5.3.3",
+    "wrangler": "^3.32.0"
   }
 }
