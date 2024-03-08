@@ -1,4 +1,4 @@
-import type { View } from '@slack/bolt';
+import { ModalView } from 'slack-cloudflare-workers';
 
 type Props = {
   channelId: string;
@@ -10,7 +10,7 @@ export default function generateBlocks({
   channelId,
   members = [],
   isInitModal = false,
-}: Props): View {
+}: Props): ModalView {
   const privateMetadata = JSON.stringify({ members, channelId });
 
   return {

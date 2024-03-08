@@ -1,18 +1,18 @@
-import type {
-  AllMiddlewareArgs,
-  SlackViewAction,
-  SlackViewMiddlewareArgs,
-} from '@slack/bolt';
 import getResponseMessage from '../utils/getResponseResult';
+import {
+  SlackEdgeAppEnv,
+  SlackRequest,
+  ViewClosed,
+  ViewSubmission,
+} from 'slack-cloudflare-workers';
 
 export default async function responseModal({
-  ack,
-  view,
-  client,
-  logger,
-  body,
-}: SlackViewMiddlewareArgs<SlackViewAction> & AllMiddlewareArgs) {
-  const { channelId } = JSON.parse(body.view?.private_metadata || '{}');
+  context,
+  payload,
+}: SlackRequest<SlackEdgeAppEnv, ViewClosed | ViewSubmission>) {
+  const { client } = context;
+  const { view, user } = payload;
+  const { channelId } = JSON.parse(view?.private_metadata || '{}');
 
   try {
     const states = view['state'].values;
@@ -26,18 +26,16 @@ export default async function responseModal({
     });
 
     if (count < 1 || count > members.length) {
-      await ack({
-        response_action: 'errors',
-        errors: {
-          ['number_input']: '숫자의 범위가 맞지 않습니다.',
-        },
-      });
+      // return {
+      //   response_action: 'errors',
+      //   errors: {
+      //     ['number_input']: '숫자의 범위가 맞지 않습니다.',
+      //   },
+      // };
     }
 
-    await ack();
-
     const message = getResponseMessage({
-      author: body.user.id,
+      author: user.id,
       members,
       count,
     });
@@ -46,8 +44,7 @@ export default async function responseModal({
       text: message,
       mrkdwn: true,
     });
-    logger.info(result);
   } catch (error) {
-    logger.error(error);
+    console.error(error);
   }
 }

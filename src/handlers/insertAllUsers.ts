@@ -1,25 +1,28 @@
-import type {
-  AllMiddlewareArgs,
+import {
   BlockAction,
-  SlackActionMiddlewareArgs,
-} from '@slack/bolt';
+  BlockElementActions,
+  DataSubmissionView,
+  SlackAppContextWithOptionalRespond,
+  SlackAppContextWithRespond,
+} from 'slack-cloudflare-workers';
 import generateBlocks from '../utils/generateBlocks';
 
 export default async function insertAllUsers({
-  ack,
-  client,
-  body,
-}: SlackActionMiddlewareArgs<BlockAction> & AllMiddlewareArgs) {
-  await ack();
-
+  context,
+  payload,
+}: {
+  context: SlackAppContextWithOptionalRespond;
+  payload: BlockAction<BlockElementActions>;
+}) {
+  const { client } = context;
   const { members, channelId } = JSON.parse(
-    body.view?.private_metadata || '{}'
+    payload.view?.private_metadata || '{}'
   );
 
   try {
     await client.views.update({
-      view_id: body?.view?.id,
-      hash: body?.view?.hash,
+      view_id: payload?.view?.id,
+      hash: payload?.view?.hash,
       view: generateBlocks({ members, channelId, isInitModal: true }),
     });
   } catch (e) {

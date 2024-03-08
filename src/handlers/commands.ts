@@ -1,29 +1,28 @@
-import type {
-  AllMiddlewareArgs,
-  SlackCommandMiddlewareArgs,
-} from '@slack/bolt';
-import type { StringIndexed } from '@slack/bolt/dist/types/helpers';
 import openModal from '../interactions/openModal';
 import getResponseMessage from '../utils/getResponseResult';
+import type {
+  SlackAppContextWithRespond,
+  SlashCommand,
+} from 'slack-cloudflare-workers';
 
 export default async function commands({
-  body,
-  ack,
-  client,
-  logger,
+  context,
   payload,
-}: SlackCommandMiddlewareArgs & AllMiddlewareArgs<StringIndexed>) {
+}: {
+  context: SlackAppContextWithRespond;
+  payload: SlashCommand;
+}) {
   const [rawGroupText, count = 1] = payload.text.split(' ');
   // NOTE: rawGroupText: '<!subteam^S06MDLGF4RY|@product>',
   const groupId = rawGroupText?.match(/(?<=subteam\^)(.*?)(?=\|)/gm)?.[0];
 
-  try {
-    await ack();
+  const { client } = context;
+  const { trigger_id, channel_id, user_id } = payload;
 
+  try {
     if (!groupId) {
       // 모달 open
-      const result = openModal(client, body);
-      logger.info(result);
+      await openModal(client, trigger_id, channel_id);
     } else {
       // 즉시 결과 return
       const { users } = await client.usergroups.users.list({
@@ -34,18 +33,18 @@ export default async function commands({
       }
 
       const message = getResponseMessage({
-        author: body.user_id,
+        author: user_id,
         members: users,
         count: Number(count),
       });
-      const result = await client.chat.postMessage({
-        channel: body.channel_id,
+
+      await client.chat.postMessage({
+        channel: channel_id,
         text: message,
         mrkdwn: true,
       });
-      logger.info(result);
     }
   } catch (error) {
-    logger.error(error);
+    console.error(error);
   }
 }
