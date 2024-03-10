@@ -22,7 +22,7 @@ export default async function commands({
 
     if (!groupId) {
       // 모달 open
-      const result = openModal(client, body);
+      const result = await openModal(client, body);
       logger.info(result);
     } else {
       // 즉시 결과 return

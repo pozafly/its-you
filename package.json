@@ -3,10 +3,7 @@
   "version": "1.0.0",
   "license": "MIT",
   "scripts": {
-    "build": "tsc -p .",
-    "build:watch": "tsc -w -p .",
-    "start": "ts-node src/app.ts",
-    "dev": "ts-node-dev --respawn --transpile-only --notify src/app.ts"
+    "dev": "ts-node-dev --respawn --transpile-only src/app.ts"
   },
   "dependencies": {
     "@slack/bolt": "^3.17.1"
