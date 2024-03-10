@@ -19,7 +19,7 @@ export default function generateBlocks({
     private_metadata: privateMetadata,
     title: {
       type: 'plain_text',
-      text: '울룰루!',
+      text: '당첨자 어디있다구요?',
       emoji: true,
     },
     submit: {
