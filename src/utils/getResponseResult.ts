@@ -22,7 +22,7 @@ export default function getResponseMessage({
   const authorUser = `<@${author}>`;
 
   if (mentionedUser.length === 0) {
-    return '*아무도 뽑히지 않았습니다 ;(* - by ${authorUser}';
+    return `*아무도 뽑히지 않았습니다 ;(* - by ${authorUser}`;
   }
 
   return `🥳 *당첨! 축하드립니다.* 🎉- by ${authorUser}\n${mentionedUser.join(
