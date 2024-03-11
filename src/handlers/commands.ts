@@ -5,6 +5,8 @@ import type {
 import type { StringIndexed } from '@slack/bolt/dist/types/helpers';
 import openModal from '../interactions/openModal';
 import getResponseMessage from '../utils/getResponseResult';
+import getGroupId from '../utils/getGroupId';
+import getCliOptions from '../utils/getCliOptions';
 
 export default async function commands({
   body,
@@ -13,24 +15,40 @@ export default async function commands({
   logger,
   payload,
 }: SlackCommandMiddlewareArgs & AllMiddlewareArgs<StringIndexed>) {
-  const [rawGroupText, count = 1] = payload.text.split(' ');
-  // NOTE: rawGroupText: '<!subteam^S06MDLGF4RY|@product>',
-  const groupId = rawGroupText?.match(/(?<=subteam\^)(.*?)(?=\|)/gm)?.[0];
-
   try {
     await ack();
 
+    const [groupId, rest] = getGroupId(payload.text);
     if (!groupId) {
       // 모달 open
       const result = await openModal(client, body);
       logger.info(result);
     } else {
       // 즉시 결과 return
-      const { users } = await client.usergroups.users.list({
+
+      const [ignoreMemberNameList, count] = getCliOptions(rest);
+      let { users } = await client.usergroups.users.list({
         usergroup: groupId,
       });
+
+      const ignoreUsers: string[] = [];
+      if (ignoreMemberNameList.length > 0) {
+        const userInfoList = await client.users.list();
+        userInfoList?.members?.forEach((el) => {
+          if ((ignoreMemberNameList as string[]).includes(el.name || '')) {
+            ignoreUsers.push(el?.id ?? '');
+          }
+        });
+      }
+
       if (!users || users.length <= 0) {
         throw new Error('no users');
+      }
+
+      if (ignoreUsers?.length > 0) {
+        ignoreUsers.forEach((el) => {
+          users = users?.filter((user) => user !== el);
+        });
       }
 
       const message = getResponseMessage({
@@ -38,12 +56,12 @@ export default async function commands({
         members: users,
         count: Number(count),
       });
-      const result = await client.chat.postMessage({
+
+      await client.chat.postMessage({
         channel: body.channel_id,
         text: message,
         mrkdwn: true,
       });
-      logger.info(result);
     }
   } catch (error) {
     logger.error(error);

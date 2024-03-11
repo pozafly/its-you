@@ -41,12 +41,11 @@ export default async function responseModal({
       members,
       count,
     });
-    const result = await client.chat.postMessage({
+    await client.chat.postMessage({
       channel: channelId,
       text: message,
       mrkdwn: true,
     });
-    logger.info(result);
   } catch (error) {
     logger.error(error);
   }
