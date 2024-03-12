@@ -7,7 +7,7 @@ function getOptionObject(text: string[]) {
       acc[cur] = [];
       temp = cur;
     } else {
-      acc[temp].push(cur);
+      acc[temp]?.push(cur);
     }
     return acc;
   }, init);
