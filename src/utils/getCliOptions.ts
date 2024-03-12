@@ -7,7 +7,7 @@ function getOptionObject(text: string[]) {
       acc[cur] = [];
       temp = cur;
     } else {
-      acc[temp].push(cur);
+      acc[temp]?.push(cur);
     }
     return acc;
   }, init);
@@ -15,6 +15,7 @@ function getOptionObject(text: string[]) {
 
 export default function getCliOptions(text: string[]): [string[] | [], number] {
   const options = getOptionObject(text);
+  console.log('options', options);
 
   let ignoreMemberNameList: string[] = [];
   if (options['-d']) {

@@ -25,7 +25,6 @@ export default async function commands({
       logger.info(result);
     } else {
       // 즉시 결과 return
-
       const [ignoreMemberNameList, count] = getCliOptions(rest);
       let { users } = await client.usergroups.users.list({
         usergroup: groupId,
