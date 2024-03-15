@@ -1,5 +1,7 @@
 # It's You
 
+<img width="200" alt="logo" src="https://github.com/pozafly/its-you/blob/main/assets/its-you.jpeg?raw=true">
+
 Slack 랜덤 추첨기
 
 ## 기능
